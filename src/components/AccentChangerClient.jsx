@@ -7,11 +7,11 @@ const AccentChangerClient = () => {
   const [isRecording, setIsRecording] = useState(false);
 
   useEffect(() => {
-    ws.current = new WebSocket("wss://your-backend-url:8080"); // replace with deployed WebSocket
+    ws.current = new WebSocket("wss://accent-backend-final.onrender.com"); // your backend
     ws.current.binaryType = "arraybuffer";
 
     ws.current.onopen = () => console.log("🔗 WebSocket connected");
-    ws.current.onerror = (err) => console.error("❌ WS error", err);
+    ws.current.onerror = (err) => console.error("❌ WebSocket error", err);
     ws.current.onmessage = (event) => {
       const audioBlob = new Blob([event.data], { type: "audio/mpeg" });
       const audioUrl = URL.createObjectURL(audioBlob);
@@ -34,7 +34,7 @@ const AccentChangerClient = () => {
       }
     };
 
-    mediaRecorder.current.start(250); // send every 250ms
+    mediaRecorder.current.start(250); // send audio every 250ms
     setIsRecording(true);
   };
 
@@ -45,12 +45,12 @@ const AccentChangerClient = () => {
 
   return (
     <div className="text-center mt-10">
-      <h2 className="text-2xl font-semibold mb-4">Accent Converter</h2>
+      <h2 className="text-2xl font-semibold mb-4">🎤 Accent Changer</h2>
       <button
         className={`px-6 py-2 rounded text-white ${isRecording ? "bg-red-600" : "bg-green-600"}`}
         onClick={isRecording ? stopRecording : startRecording}
       >
-        {isRecording ? "Stop Accent" : "Start Accent"}
+        {isRecording ? "Stop" : "Start Accent Live"}
       </button>
       <audio ref={audioPlayer} hidden />
     </div>
