@@ -11,19 +11,28 @@ const Signup = () => {
   const handleSignup = async (e) => {
     e.preventDefault();
     setLoading(true);
+const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/auth/signup`, {
+  name,
+  email,
+  password,
+});
 
-    try {
-      await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/auth/signup`, {
-        name,
-        email,
-        password,
-      });
+if (res.data.success) {
+  window.location.href = "/login";
+}
 
-      alert("Signup successful! Please login.");
-      window.location.href = "/login";
-    } catch (error) {
-      alert("Signup failed: " + error?.response?.data?.message || "Unknown error");
-    }
+    // try {
+    //   await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/auth/signup`, {
+    //     name,
+    //     email,
+    //     password,
+    //   });
+
+    //   alert("Signup successful! Please login.");
+    //   window.location.href = "/login";
+    // } catch (error) {
+    //   alert("Signup failed: " + error?.response?.data?.message || "Unknown error");
+    // }
 
     setLoading(false);
   };
