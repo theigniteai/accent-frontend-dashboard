@@ -1,4 +1,3 @@
-// src/pages/Signup.jsx
 import React, { useState } from "react";
 import axios from "axios";
 
@@ -6,33 +5,32 @@ const Signup = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSignup = async (e) => {
     e.preventDefault();
     setLoading(true);
-const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/auth/signup`, {
-  name,
-  email,
-  password,
-});
 
-if (res.data.success) {
-  window.location.href = "/login";
-}
+    try {
+      const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/auth/signup`, {
+        name,
+        email,
+        password,
+      });
 
-    // try {
-    //   await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/auth/signup`, {
-    //     name,
-    //     email,
-    //     password,
-    //   });
-
-    //   alert("Signup successful! Please login.");
-    //   window.location.href = "/login";
-    // } catch (error) {
-    //   alert("Signup failed: " + error?.response?.data?.message || "Unknown error");
-    // }
+      if (res.data.success) {
+        setMessage("✅ Signup successful! Redirecting to login...");
+        setTimeout(() => {
+          window.location.href = "/login";
+        }, 1500);
+      } else {
+        setMessage("❌ " + res.data.message || "Signup failed");
+      }
+    } catch (error) {
+      console.error(error);
+      setMessage("❌ Signup failed: " + (error.response?.data?.message || "Server error"));
+    }
 
     setLoading(false);
   };
@@ -77,8 +75,15 @@ if (res.data.success) {
           {loading ? "Signing up..." : "Sign Up"}
         </button>
 
+        {message && (
+          <p className="text-center text-sm mt-4 text-red-600">{message}</p>
+        )}
+
         <p className="text-center text-sm mt-4">
-          Already have an account? <a href="/login" className="text-purple-700 underline">Login</a>
+          Already have an account?{" "}
+          <a href="/login" className="text-purple-700 underline">
+            Login
+          </a>
         </p>
       </form>
     </div>
