@@ -4,9 +4,13 @@ import AccentChangerClient from "../components/AccentChangerClient";
 
 const Dashboard = () => {
   return (
-    <div className="p-6">
-      <h1 className="text-3xl font-bold mb-4">Welcome to Your Dashboard</h1>
-      <AccentChangerClient />
+    <div className="min-h-screen p-6 bg-white">
+      <h1 className="text-3xl font-bold mb-4 text-purple-700">Welcome to AccentShift</h1>
+
+      <div className="mt-6">
+        <h2 className="text-xl font-semibold mb-2">Live Accent Changer</h2>
+        <AccentChangerClient />
+      </div>
     </div>
   );
 };
