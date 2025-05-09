@@ -1,4 +1,4 @@
-// Login page with useState, useEffect, form
+// src/pages/Login.jsx
 import React, { useState } from "react";
 import axios from "axios";
 
@@ -22,12 +22,10 @@ const Login = () => {
       setMessage("✅ Login successful!");
       console.log(res.data);
 
-      // Store token if returned
       if (res.data.token) {
         localStorage.setItem("accentshift_token", res.data.token);
       }
 
-      // Redirect to dashboard
       window.location.href = "/dashboard";
     } catch (err) {
       console.error(err);
@@ -67,11 +65,6 @@ const Login = () => {
         {message && <p className="text-center text-sm text-red-600">{message}</p>}
       </form>
     </div>
-  );
-};
-
-export default Login;
-
   );
 };
 
