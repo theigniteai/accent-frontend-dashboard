@@ -9,7 +9,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("accentshift_token");
     if (!token) {
       navigate("/login");
       return;
