@@ -1,40 +1,27 @@
+// src/layouts/DashboardLayout.jsx
 import React from "react";
-import { NavLink, Outlet } from "react-router-dom";
+import { Outlet, Link } from "react-router-dom";
 
-const tabs = [
-  { path: "",           label: "Overview" },
-  { path: "profile",    label: "Profile" },
-  { path: "settings",   label: "Settings" },
-  { path: "billing",    label: "Billing" },
-  { path: "subscription", label: "Subscription" },
-  { path: "pricing",    label: "Pricing" },
-];
+const DashboardLayout = () => {
+  return (
+    <div className="flex">
+      <aside className="w-64 bg-gray-900 min-h-screen text-white p-6 space-y-4">
+        <h2 className="text-2xl font-bold mb-6">Dashboard</h2>
+        <nav className="flex flex-col gap-2">
+          <Link to="/dashboard" className="hover:text-purple-400">Overview</Link>
+          <Link to="/dashboard/profile" className="hover:text-purple-400">Profile</Link>
+          <Link to="/dashboard/settings" className="hover:text-purple-400">Settings</Link>
+          <Link to="/dashboard/billing" className="hover:text-purple-400">Billing</Link>
+          <Link to="/dashboard/subscription" className="hover:text-purple-400">Subscription</Link>
+          <Link to="/dashboard/pricing" className="hover:text-purple-400">Pricing</Link>
+        </nav>
+      </aside>
 
-const DashboardLayout = () => (
-  <div className="flex min-h-screen">
-    <aside className="w-64 bg-gray-800 text-white p-6">
-      <h2 className="text-2xl mb-8">Dashboard</h2>
-      <nav className="space-y-2">
-        {tabs.map((tab) => (
-          <NavLink
-            key={tab.path}
-            to={tab.path}
-            end
-            className={({ isActive }) =>
-              isActive
-                ? "block px-4 py-2 bg-gray-700 rounded font-medium"
-                : "block px-4 py-2 hover:bg-gray-700 rounded"
-            }
-          >
-            {tab.label}
-          </NavLink>
-        ))}
-      </nav>
-    </aside>
-    <main className="flex-1 p-10 bg-gray-100">
-      <Outlet />
-    </main>
-  </div>
-);
+      <main className="flex-1 bg-gray-100 p-6">
+        <Outlet /> {/* This will render the Dashboard content */}
+      </main>
+    </div>
+  );
+};
 
 export default DashboardLayout;
