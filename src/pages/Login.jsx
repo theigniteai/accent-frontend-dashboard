@@ -1,85 +1,77 @@
 // Login page with useState, useEffect, form
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const Login = () => {
-  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError("");
-    setLoading(true);
 
     try {
-      const res = await axios.post(`${import.meta.env.VITE_API_URL}/auth/login`, {
-        email,
-        password,
-      });
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/api/auth/login`,
+        {
+          email,
+          password,
+        }
+      );
 
-      localStorage.setItem("token", res.data.token);
-      navigate("/dashboard");
+      setMessage("✅ Login successful!");
+      console.log(res.data);
+
+      // Store token if returned
+      if (res.data.token) {
+        localStorage.setItem("accentshift_token", res.data.token);
+      }
+
+      // Redirect to dashboard
+      window.location.href = "/dashboard";
     } catch (err) {
-      setError(err?.response?.data?.message || "Login failed");
-    } finally {
-      setLoading(false);
+      console.error(err);
+      setMessage("❌ Invalid credentials");
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-800 to-indigo-900">
-      <form
-        onSubmit={handleLogin}
-        className="bg-white text-black p-8 rounded-xl shadow-md w-full max-w-md"
-      >
-        <h2 className="text-2xl font-bold mb-6 text-center text-purple-800">
-          Sign In to AccentShift
-        </h2>
+    <div className="max-w-md mx-auto mt-20 p-6 bg-white rounded shadow">
+      <h2 className="text-2xl font-bold mb-4">Login to AccentShift</h2>
+      <form onSubmit={handleLogin} className="space-y-4">
+        <input
+          type="email"
+          placeholder="Email"
+          className="w-full p-2 border rounded"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
 
-        {error && <p className="text-red-600 mb-3 text-sm">{error}</p>}
-
-        <div className="mb-4">
-          <label className="block mb-1 font-semibold">Email</label>
-          <input
-            type="email"
-            className="w-full border px-3 py-2 rounded"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </div>
-
-        <div className="mb-4">
-          <label className="block mb-1 font-semibold">Password</label>
-          <input
-            type="password"
-            className="w-full border px-3 py-2 rounded"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
+        <input
+          type="password"
+          placeholder="Password"
+          className="w-full p-2 border rounded"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
 
         <button
           type="submit"
-          disabled={loading}
-          className="w-full bg-purple-700 text-white py-2 rounded hover:bg-purple-800 transition"
+          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
         >
-          {loading ? "Logging in..." : "Login"}
+          Login
         </button>
 
-        <p className="text-sm text-center mt-4">
-          Don’t have an account?{" "}
-          <a href="/signup" className="text-purple-700 underline">
-            Sign up
-          </a>
-        </p>
+        {message && <p className="text-center text-sm text-red-600">{message}</p>}
       </form>
     </div>
+  );
+};
+
+export default Login;
+
   );
 };
 
