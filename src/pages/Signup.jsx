@@ -19,22 +19,31 @@ const Signup = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const sendOTP = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
+  // For testing..
 
-    try {
-      await axios.post(`${import.meta.env.VITE_API_URL}/auth/send-otp`, {
-        email: form.email,
-      });
-      setStep(2);
-    } catch (err) {
-      setError(err?.response?.data?.message || "Error sending OTP");
-    } finally {
-      setLoading(false);
-    }
-  };
+  await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/auth/signup`, {
+  name,
+  email,
+  password,
+});
+
+  
+  // const sendOTP = async (e) => {
+  //   e.preventDefault();
+  //   setLoading(true);
+  //   setError("");
+
+  //   try {
+  //     await axios.post(`${import.meta.env.VITE_API_URL}/auth/send-otp`, {
+  //       email: form.email,
+  //     });
+  //     setStep(2);
+  //   } catch (err) {
+  //     setError(err?.response?.data?.message || "Error sending OTP");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   const handleSignup = async (e) => {
     e.preventDefault();
