@@ -1,33 +1,14 @@
-import React, { useState, useContext } from "react";
-import axios from "axios";
-import { AuthContext } from "../context/AuthContext";
+import React, { useState } from "react";
 
 const Login = () => {
-  const { setToken } = useContext(AuthContext);
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [message, setMessage] = useState("");
+  const [pwd, setPwd] = useState("");
+  const [msg, setMsg] = useState("");
 
-  const handleLogin = async (e) => {
+  const handleLogin = (e) => {
     e.preventDefault();
-
-    try {
-      const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/auth/login`, {
-        email,
-        password,
-      });
-
-      if (res.data.token) {
-        localStorage.setItem("accentshift_token", res.data.token);
-        setToken(res.data.token);
-        window.location.href = "/dashboard";
-      } else {
-        setMessage("❌ Invalid credentials");
-      }
-    } catch (err) {
-      setMessage("❌ Login failed");
-      console.error(err);
-    }
+    setMsg("✅ (bypassed) Logged in");
+    window.location.href = "/dashboard";
   };
 
   return (
@@ -46,8 +27,8 @@ const Login = () => {
           type="password"
           placeholder="Password"
           className="w-full p-2 border rounded"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          value={pwd}
+          onChange={(e) => setPwd(e.target.value)}
           required
         />
         <button
@@ -56,7 +37,7 @@ const Login = () => {
         >
           Login
         </button>
-        {message && <p className="text-red-500 text-sm text-center">{message}</p>}
+        {msg && <p className="text-center text-green-600">{msg}</p>}
       </form>
     </div>
   );
