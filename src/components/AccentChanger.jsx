@@ -5,7 +5,6 @@ const AccentChanger = () => {
   const [selectedAccent, setSelectedAccent] = useState("us");
   const wsRef = useRef(null);
   const mediaRecorderRef = useRef(null);
-  const audioChunksRef = useRef([]);
 
   const startRecording = async () => {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -19,22 +18,30 @@ const AccentChanger = () => {
     };
 
     ws.onmessage = (event) => {
-      console.log("🔊 Received converted audio");
-      const audioBlob = new Blob([event.data], { type: "audio/mpeg" });
-      const audioUrl = URL.createObjectURL(audioBlob);
-      const audio = new Audio(audioUrl);
-      audio.play(); // ✅ Playback the converted audio
+      console.log("🎧 Received WebSocket message:", event.data);
+
+      try {
+        const blob = new Blob([event.data], { type: "audio/mpeg" });
+        const url = URL.createObjectURL(blob);
+        console.log("▶️ Audio URL:", url);
+
+        const audio = new Audio(url);
+        audio.play().catch((err) => {
+          console.error("❌ Playback failed:", err.message);
+        });
+      } catch (e) {
+        console.error("❌ Error playing audio:", e.message);
+      }
     };
 
     const mediaRecorder = new MediaRecorder(stream, { mimeType: "audio/webm" });
     mediaRecorder.ondataavailable = (e) => {
       if (ws.readyState === WebSocket.OPEN) {
-        ws.send(e.data); // Send chunks live
-        audioChunksRef.current.push(e.data); // Save for preview if needed
+        ws.send(e.data);
       }
     };
 
-    mediaRecorder.start(300); // Send every 300ms
+    mediaRecorder.start(300);
     mediaRecorderRef.current = mediaRecorder;
     wsRef.current = ws;
     setIsRecording(true);
@@ -43,7 +50,7 @@ const AccentChanger = () => {
   const stopRecording = () => {
     if (mediaRecorderRef.current) mediaRecorderRef.current.stop();
     if (wsRef.current?.readyState === WebSocket.OPEN) {
-      wsRef.current.send("stop"); // Send stop signal
+      wsRef.current.send("stop");
     }
     setIsRecording(false);
   };
