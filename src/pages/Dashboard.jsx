@@ -1,6 +1,6 @@
 // src/pages/Dashboard.jsx
 import React from "react";
-import AccentChangerClient from "../components/AccentChanger";
+import AccentChanger from "../components/AccentChanger";
 
 const Dashboard = () => {
   return (
