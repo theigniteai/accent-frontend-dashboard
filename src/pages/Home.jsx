@@ -2,6 +2,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import AccentChanger from "../components/AccentChanger";
 
 const Home = () => {
   return (
@@ -29,6 +30,11 @@ const Home = () => {
           </button>
         </Link>
       </motion.section>
+
+       <div className="min-h-screen bg-gray-100 p-10">
+      <AccentChanger />
+    </div>
+      
     </div>
   );
 };
