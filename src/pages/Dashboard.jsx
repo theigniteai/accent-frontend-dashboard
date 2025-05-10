@@ -1,6 +1,6 @@
 // src/pages/Dashboard.jsx
 import React from "react";
-import AccentChangerClient from "../components/AccentChangerClient";
+import AccentChangerClient from "../components/AccentChanger";
 
 const Dashboard = () => {
   return (
@@ -9,7 +9,7 @@ const Dashboard = () => {
 
       <div className="mt-6">
         <h2 className="text-xl font-semibold mb-2">Live Accent Changer</h2>
-        <AccentChangerClient />
+        <AccentChanger />
       </div>
     </div>
   );
