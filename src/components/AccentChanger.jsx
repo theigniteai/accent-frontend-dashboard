@@ -9,7 +9,7 @@ const AccentChanger = () => {
   const startRecording = async () => {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
-    const ws = new WebSocket("wss://accent-relay-part-two-production.up.railway.app/");
+    const ws = new WebSocket("wss://accent-relay-part-two-production.up.railway.app"); // your updated relay URL
     ws.binaryType = "arraybuffer";
 
     ws.onopen = () => {
@@ -17,27 +17,28 @@ const AccentChanger = () => {
       ws.send(JSON.stringify({ type: "start", accent: selectedAccent }));
     };
 
-  ws.onmessage = (event) => {
-  // If the message is text, log it (probably an error)
-  if (typeof event.data === "string") {
-    console.warn("⚠️ Received text message:", event.data);
-    return;
-  }
+    ws.onmessage = (event) => {
+      console.log("🎧 Received WebSocket message:", event.data);
 
-  // If binary, assume it's audio and play it
-  try {
-    const blob = new Blob([event.data], { type: "audio/mpeg" });
-    const url = URL.createObjectURL(blob);
-    console.log("▶️ Playing audio:", url);
-
-    const audio = new Audio(url);
-    audio.play().catch((err) => {
-      console.error("❌ Playback failed:", err.message);
-    });
-  } catch (e) {
-    console.error("❌ Error playing audio:", e.message);
-  }
-};
+      try {
+        if (typeof event.data === "string") {
+          const message = JSON.parse(event.data);
+          if (message.error) {
+            console.warn("⚠️ Error:", message.error);
+            return;
+          }
+        } else {
+          const blob = new Blob([event.data], { type: "audio/mpeg" });
+          const url = URL.createObjectURL(blob);
+          const audio = new Audio(url);
+          audio.play().catch((err) => {
+            console.error("❌ Playback failed:", err.message);
+          });
+        }
+      } catch (e) {
+        console.error("❌ Message handling failed:", e.message);
+      }
+    };
 
     const mediaRecorder = new MediaRecorder(stream, { mimeType: "audio/webm" });
     mediaRecorder.ondataavailable = (e) => {
@@ -55,7 +56,8 @@ const AccentChanger = () => {
   const stopRecording = () => {
     if (mediaRecorderRef.current) mediaRecorderRef.current.stop();
     if (wsRef.current?.readyState === WebSocket.OPEN) {
-      wsRef.current.send("stop");
+      // ✅ FIXED: sending 'stop' as JSON
+      wsRef.current.send(JSON.stringify({ type: "stop" }));
     }
     setIsRecording(false);
   };
