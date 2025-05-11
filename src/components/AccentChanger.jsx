@@ -9,7 +9,7 @@ const AccentChanger = () => {
   const startRecording = async () => {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
-    const ws = new WebSocket("wss://accentshift-relay.up.railway.app");
+    const ws = new WebSocket("wss://accent-backend-final.onrender.com");
     ws.binaryType = "arraybuffer";
 
     ws.onopen = () => {
