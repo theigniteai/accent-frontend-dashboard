@@ -18,21 +18,29 @@ const AccentChanger = () => {
     };
 
     ws.onmessage = (event) => {
-      console.log("🎧 Received WebSocket message:", event.data);
+  try {
+    const parsed = JSON.parse(event.data);
 
-      try {
-        const blob = new Blob([event.data], { type: "audio/mpeg" });
-        const url = URL.createObjectURL(blob);
-        console.log("▶️ Audio URL:", url);
+    if (parsed.type === "audio") {
+      const audioData = Uint8Array.from(atob(parsed.audio), c => c.charCodeAt(0));
+      const blob = new Blob([audioData], { type: "audio/mpeg" });
+      const url = URL.createObjectURL(blob);
 
-        const audio = new Audio(url);
-        audio.play().catch((err) => {
-          console.error("❌ Playback failed:", err.message);
-        });
-      } catch (e) {
-        console.error("❌ Error playing audio:", e.message);
-      }
-    };
+      console.log("▶️ Playing audio...");
+      const audio = new Audio(url);
+      audio.play().catch((err) => {
+        console.error("❌ Playback failed:", err.message);
+      });
+    } else if (parsed.type === "error") {
+      console.error("🚨 Server error:", parsed.message);
+    } else {
+      console.log("ℹ️ Other message:", parsed);
+    }
+
+  } catch (e) {
+    console.warn("❓ Non-JSON message received, skipping:", e.message);
+  }
+};
 
     const mediaRecorder = new MediaRecorder(stream, { mimeType: "audio/webm" });
     mediaRecorder.ondataavailable = (e) => {
