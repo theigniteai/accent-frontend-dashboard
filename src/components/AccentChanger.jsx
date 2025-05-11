@@ -17,28 +17,25 @@ const AccentChanger = () => {
       ws.send(JSON.stringify({ type: "start", accent: selectedAccent }));
     };
 
-    ws.onmessage = (event) => {
+  ws.onmessage = (event) => {
+  // If the message is text, log it (probably an error)
+  if (typeof event.data === "string") {
+    console.warn("⚠️ Received text message:", event.data);
+    return;
+  }
+
+  // If binary, assume it's audio and play it
   try {
-    const parsed = JSON.parse(event.data);
+    const blob = new Blob([event.data], { type: "audio/mpeg" });
+    const url = URL.createObjectURL(blob);
+    console.log("▶️ Playing audio:", url);
 
-    if (parsed.type === "audio") {
-      const audioData = Uint8Array.from(atob(parsed.audio), c => c.charCodeAt(0));
-      const blob = new Blob([audioData], { type: "audio/mpeg" });
-      const url = URL.createObjectURL(blob);
-
-      console.log("▶️ Playing audio...");
-      const audio = new Audio(url);
-      audio.play().catch((err) => {
-        console.error("❌ Playback failed:", err.message);
-      });
-    } else if (parsed.type === "error") {
-      console.error("🚨 Server error:", parsed.message);
-    } else {
-      console.log("ℹ️ Other message:", parsed);
-    }
-
+    const audio = new Audio(url);
+    audio.play().catch((err) => {
+      console.error("❌ Playback failed:", err.message);
+    });
   } catch (e) {
-    console.warn("❓ Non-JSON message received, skipping:", e.message);
+    console.error("❌ Error playing audio:", e.message);
   }
 };
 
